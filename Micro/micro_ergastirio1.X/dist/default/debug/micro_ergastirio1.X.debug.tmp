@@ -1,0 +1,29 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.7</VERSION>
+ <DEVICE>"ATmega328PB"</DEVICE>
+ <WORKING_DIR>/Users/panos_katsalifis/MPLABXProjects/micro_ergastirio1.X</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>/Applications/microchip/mplabx/v6.20/packs/Microchip/ATmega_DFP/3.1.264/avrasm/inc</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>newAsmTemplate.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>/Applications/microchip/mplabx/v6.20/packs/Microchip/ATmega_DFP/3.1.264/avrasm/inc/m328PBdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>dist/default/debug/micro_ergastirio1.X.debug.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>newAsmTemplate.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>dist/default/debug/micro_ergastirio1.X.debug.map</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <loop1><FILE>newAsmTemplate.asm</FILE><LINE>24</LINE></loop1>
+  <delay_outer><FILE>newAsmTemplate.asm</FILE><LINE>44</LINE></delay_outer>
+  <delay_inner><FILE>newAsmTemplate.asm</FILE><LINE>34</LINE></delay_inner>
+  <loop3><FILE>newAsmTemplate.asm</FILE><LINE>36</LINE></loop3>
+  <loop4><FILE>newAsmTemplate.asm</FILE><LINE>48</LINE></loop4>
+ </LABELS>
+</ASSEMBLER_INFO>

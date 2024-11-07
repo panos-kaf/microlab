@@ -1,0 +1,29 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.7</VERSION>
+ <DEVICE>"ATmega328PB"</DEVICE>
+ <WORKING_DIR>/Users/panos_katsalifis/MPLABXProjects/Microlab1_1.X</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>/Applications/microchip/mplabx/v6.20/packs/Microchip/ATmega_DFP/3.1.264/avrasm/inc</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>Askisi1_1.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>/Applications/microchip/mplabx/v6.20/packs/Microchip/ATmega_DFP/3.1.264/avrasm/inc/m328PBdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>dist/default/debug/Microlab1_1.X.debug.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>Askisi1_1.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>dist/default/debug/Microlab1_1.X.debug.map</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <loop1><FILE>Askisi1_1.asm</FILE><LINE>21</LINE></loop1>
+  <delay_outer><FILE>Askisi1_1.asm</FILE><LINE>41</LINE></delay_outer>
+  <delay_inner><FILE>Askisi1_1.asm</FILE><LINE>31</LINE></delay_inner>
+  <loop3><FILE>Askisi1_1.asm</FILE><LINE>33</LINE></loop3>
+  <loop4><FILE>Askisi1_1.asm</FILE><LINE>45</LINE></loop4>
+ </LABELS>
+</ASSEMBLER_INFO>

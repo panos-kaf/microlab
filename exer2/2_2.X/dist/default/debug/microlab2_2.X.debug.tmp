@@ -1,0 +1,32 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.7</VERSION>
+ <DEVICE>"ATmega328PB"</DEVICE>
+ <WORKING_DIR>/Users/panos_katsalifis/MPLABXProjects/microlab2_2.X</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>/Applications/microchip/mplabx/v6.20/packs/Microchip/ATmega_DFP/3.1.264/avrasm/inc</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>askisi2_2.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>/Applications/microchip/mplabx/v6.20/packs/Microchip/ATmega_DFP/3.1.264/avrasm/inc/m328PBdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>dist/default/debug/microlab2_2.X.debug.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>askisi2_2.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>dist/default/debug/microlab2_2.X.debug.map</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <reset><FILE>askisi2_2.asm</FILE><LINE>15</LINE></reset>
+  <isr0><FILE>askisi2_2.asm</FILE><LINE>68</LINE></isr0>
+  <loop1><FILE>askisi2_2.asm</FILE><LINE>44</LINE></loop1>
+  <loop2><FILE>askisi2_2.asm</FILE><LINE>46</LINE></loop2>
+  <delay_mS><FILE>askisi2_2.asm</FILE><LINE>55</LINE></delay_mS>
+  <loop_inn><FILE>askisi2_2.asm</FILE><LINE>60</LINE></loop_inn>
+  <loop3><FILE>askisi2_2.asm</FILE><LINE>85</LINE></loop3>
+  <output><FILE>askisi2_2.asm</FILE><LINE>92</LINE></output>
+ </LABELS>
+</ASSEMBLER_INFO>
