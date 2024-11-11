@@ -61,20 +61,11 @@ main:
 	
 	rjmp main
 	
-	; multiply * 25
-	; 4 right shifts
-	; multiply * 5
-	; 4 right shifts
-	
-		
 isr:
 	lds ADC_L,ADCL
 	lds ADC_H,ADCH
 	reti
 	
-; Assume 9-bit binary number is in r16:r17 (r16 = low byte, r17 = high byte)
-; Output: hundreds in r18, tens in r19, units in r20
-
 compute:
 	mov r28,ADC_L
 	mov r29,ADC_H
@@ -195,7 +186,6 @@ bin_to_dec:
 
     ldi r21, 100         ; Load 100 into r21 for hundreds place calculation
 	
-; ---- Hundreds Calculation ----
 hundreds_loop:
     ldi r22, 0           ; Temporary register to store carry from r17
     cp ADC_H, r22
@@ -208,7 +198,6 @@ skip:
     inc r18              ; Increment hundreds place
     rjmp hundreds_loop   ; Repeat until r17:r16 < 100
 
-; ---- Tens Calculation ----
 tens_loop:
     ldi r21, 10          ; Load 10 into r21 for tens place calculation
 tens_subtract:
@@ -219,7 +208,6 @@ tens_subtract:
     inc r19              ; Increment tens place
     rjmp tens_subtract   ; Repeat until r17:r16 < 10
 
-; ---- Units Calculation ----
 units_place:
     mov r20, ADC_L         ; The remaining value in r16 is the units place
 

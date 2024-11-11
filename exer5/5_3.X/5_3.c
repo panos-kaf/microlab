@@ -160,23 +160,8 @@ uint8_t PCA9555_0_read(PCA9555_REGISTERS reg){
     return ret_val;
 }
 
-void write_2_nibbles(uint8_t c){
-    uint8_t temp= c;
-    PCA9555_0_write(REG_OUTPUT_0, (PCA9555_0_read(REG_INPUT_0) & 0x0f) + (temp & 0xf0)); //LCD Data High Bytes
-    PCA9555_0_write(REG_OUTPUT_0, PCA9555_0_read(REG_INPUT_0) | 0x08);
-    asm("nop");
-    asm("nop");
-    PCA9555_0_write(REG_OUTPUT_0, PCA9555_0_read(REG_INPUT_0) & (~0x08));
-   
-    c=(c<<4)|(c>>4);
-    PCA9555_0_write(REG_OUTPUT_0, (PCA9555_0_read(REG_INPUT_0) & 0x0f) + (c & 0xf0)); //LCD Data Low Bytes
-   
-    PCA9555_0_write(REG_OUTPUT_0, PCA9555_0_read(REG_INPUT_0) | 0x08);
-    asm("nop");
-    asm("nop");
-    PCA9555_0_write(REG_OUTPUT_0, PCA9555_0_read(REG_INPUT_0) & (~0x08));
+void write_2_nibbles(uint8_t input){
     
-    /*
     unsigned char exp = PCA9555_0_read(REG_INPUT_0)&0x0f;
     unsigned char temp = input;
     temp&=0xf0;
@@ -187,8 +172,9 @@ void write_2_nibbles(uint8_t c){
     __asm__ __volatile__("nop");
     PCA9555_0_write(REG_OUTPUT_0,PCA9555_0_read(REG_INPUT_0)&(0b11110111));
     
-    input=(input<<4)|(input>>4);
+    temp=(input<<4)|(input>>4);
     
+    exp = PCA9555_0_read(REG_INPUT_0)&0x0f;
     temp&=0xf0;
     temp+=exp;
     
@@ -197,7 +183,7 @@ void write_2_nibbles(uint8_t c){
     __asm__ __volatile__("nop");
     __asm__ __volatile__("nop");
     PCA9555_0_write(REG_OUTPUT_0,PCA9555_0_read(REG_INPUT_0)&(0b11110111));
-*/
+     
 }
 
 void lcd_data(unsigned char data){

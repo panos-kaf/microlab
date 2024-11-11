@@ -346,20 +346,20 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x15a2
+.debug_info     0x0000000000000000     0x15b7
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x8ea /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
- .debug_info    0x00000000000008ea      0xcb8 build/default/debug/5_3.o
+ .debug_info    0x00000000000008ea      0xccd build/default/debug/5_3.o
 
 .debug_abbrev   0x0000000000000000      0xadf
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x86e /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
  .debug_abbrev  0x000000000000086e      0x271 build/default/debug/5_3.o
 
-.debug_line     0x0000000000000000      0x70c
+.debug_line     0x0000000000000000      0x725
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000      0x1a5 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
- .debug_line    0x00000000000001a5      0x567 build/default/debug/5_3.o
+ .debug_line    0x00000000000001a5      0x580 build/default/debug/5_3.o
 
 .debug_frame    0x0000000000000000      0x174
  *(.debug_frame)
@@ -370,9 +370,9 @@ END GROUP
  .debug_str     0x0000000000000000      0x318 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
  .debug_str     0x0000000000000318       0x39 build/default/debug/5_3.o
 
-.debug_loc      0x0000000000000000      0x578
+.debug_loc      0x0000000000000000      0x5ce
  *(.debug_loc)
- .debug_loc     0x0000000000000000      0x578 build/default/debug/5_3.o
+ .debug_loc     0x0000000000000000      0x5ce build/default/debug/5_3.o
 
 .debug_macinfo
  *(.debug_macinfo)

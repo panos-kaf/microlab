@@ -165,9 +165,9 @@ int main(void){
     
     PCA9555_0_write(REG_CONFIGURATION_0, 0x00); //Set EXT_PORT0 as output
     PCA9555_0_write(REG_CONFIGURATION_1, 0b11110000); //Set EXT_PORT0 as output
-    PCA9555_0_write(REG_OUTPUT_0,0x00);
+    PCA9555_0_write(REG_OUTPUT_1,0x00);
     
-    PCA9555_0_write(REG_POLARITY_INV_1,0xff);
+    //PCA9555_0_write(REG_POLARITY_INV_1,0xff);
 
     uint8_t val=0;
     
