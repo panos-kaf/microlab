@@ -347,20 +347,20 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x176b
+.debug_info     0x0000000000000000     0x179a
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x8ea /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
- .debug_info    0x00000000000008ea      0xe81 build/default/debug/6_3.o
+ .debug_info    0x00000000000008ea      0xeb0 build/default/debug/6_3.o
 
 .debug_abbrev   0x0000000000000000      0xb04
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x86e /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
  .debug_abbrev  0x000000000000086e      0x296 build/default/debug/6_3.o
 
-.debug_line     0x0000000000000000      0x8a2
+.debug_line     0x0000000000000000      0x8bd
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000      0x1a5 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
- .debug_line    0x00000000000001a5      0x6fd build/default/debug/6_3.o
+ .debug_line    0x00000000000001a5      0x718 build/default/debug/6_3.o
 
 .debug_frame    0x0000000000000000      0x1b4
  *(.debug_frame)
@@ -371,9 +371,9 @@ END GROUP
  .debug_str     0x0000000000000000      0x318 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
  .debug_str     0x0000000000000318       0x39 build/default/debug/6_3.o
 
-.debug_loc      0x0000000000000000      0x8fd
+.debug_loc      0x0000000000000000      0x960
  *(.debug_loc)
- .debug_loc     0x0000000000000000      0x8fd build/default/debug/6_3.o
+ .debug_loc     0x0000000000000000      0x960 build/default/debug/6_3.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -393,9 +393,9 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x0000000000000000       0xc0
+.debug_ranges   0x0000000000000000       0xd8
  *(.debug_ranges)
- .debug_ranges  0x0000000000000000       0xc0 build/default/debug/6_3.o
+ .debug_ranges  0x0000000000000000       0xd8 build/default/debug/6_3.o
 
 .debug_macro
  *(.debug_macro)
@@ -414,159 +414,159 @@ LOAD data_init
                 0x0000000000800100        0x2 build/default/debug/6_3.o
                 0x0000000000800100                pressed_keys
 
-.text.keypad_to_ascii
-                0x000000000000010e       0xd0
- .text.keypad_to_ascii
-                0x000000000000010e       0xd0 build/default/debug/6_3.o
-                0x000000000000010e                keypad_to_ascii
+.text.main      0x000000000000010e       0xda
+ .text.main     0x000000000000010e       0xda build/default/debug/6_3.o
+                0x000000000000010e                main
 
-.text.main      0x00000000000001de       0xbe
- .text.main     0x00000000000001de       0xbe build/default/debug/6_3.o
-                0x00000000000001de                main
+.text.keypad_to_ascii
+                0x00000000000001e8       0xd0
+ .text.keypad_to_ascii
+                0x00000000000001e8       0xd0 build/default/debug/6_3.o
+                0x00000000000001e8                keypad_to_ascii
 
 .text.pca_lcd_init
-                0x000000000000029c       0xaa
+                0x00000000000002b8       0xaa
  .text.pca_lcd_init
-                0x000000000000029c       0xaa build/default/debug/6_3.o
-                0x000000000000029c                pca_lcd_init
+                0x00000000000002b8       0xaa build/default/debug/6_3.o
+                0x00000000000002b8                pca_lcd_init
 
 .text.pca_write_2_nibbles
-                0x0000000000000346       0x7c
+                0x0000000000000362       0x7c
  .text.pca_write_2_nibbles
-                0x0000000000000346       0x7c build/default/debug/6_3.o
-                0x0000000000000346                pca_write_2_nibbles
+                0x0000000000000362       0x7c build/default/debug/6_3.o
+                0x0000000000000362                pca_write_2_nibbles
 
 .text.twi_start_wait
-                0x00000000000003c2       0x50
+                0x00000000000003de       0x50
  .text.twi_start_wait
-                0x00000000000003c2       0x50 build/default/debug/6_3.o
-                0x00000000000003c2                twi_start_wait
+                0x00000000000003de       0x50 build/default/debug/6_3.o
+                0x00000000000003de                twi_start_wait
 
 .text.twi_start
-                0x0000000000000412       0x4e
+                0x000000000000042e       0x4e
  .text.twi_start
-                0x0000000000000412       0x4e build/default/debug/6_3.o
-                0x0000000000000412                twi_start
+                0x000000000000042e       0x4e build/default/debug/6_3.o
+                0x000000000000042e                twi_start
 
 .text.scan_keypad
-                0x0000000000000460       0x44
+                0x000000000000047c       0x44
  .text.scan_keypad
-                0x0000000000000460       0x44 build/default/debug/6_3.o
-                0x0000000000000460                scan_keypad
+                0x000000000000047c       0x44 build/default/debug/6_3.o
+                0x000000000000047c                scan_keypad
 
 .text.scan_keypad_rising_edge
-                0x00000000000004a4       0x3c
+                0x00000000000004c0       0x3c
  .text.scan_keypad_rising_edge
-                0x00000000000004a4       0x3c build/default/debug/6_3.o
-                0x00000000000004a4                scan_keypad_rising_edge
+                0x00000000000004c0       0x3c build/default/debug/6_3.o
+                0x00000000000004c0                scan_keypad_rising_edge
 
 .text.pca_lcd_data
-                0x00000000000004e0       0x2a
+                0x00000000000004fc       0x2a
  .text.pca_lcd_data
-                0x00000000000004e0       0x2a build/default/debug/6_3.o
-                0x00000000000004e0                pca_lcd_data
+                0x00000000000004fc       0x2a build/default/debug/6_3.o
+                0x00000000000004fc                pca_lcd_data
 
 .text.pca_lcd_command
-                0x000000000000050a       0x2a
+                0x0000000000000526       0x2a
  .text.pca_lcd_command
-                0x000000000000050a       0x2a build/default/debug/6_3.o
-                0x000000000000050a                pca_lcd_command
+                0x0000000000000526       0x2a build/default/debug/6_3.o
+                0x0000000000000526                pca_lcd_command
 
 .text.PCA9555_0_read
-                0x0000000000000534       0x26
+                0x0000000000000550       0x26
  .text.PCA9555_0_read
-                0x0000000000000534       0x26 build/default/debug/6_3.o
-                0x0000000000000534                PCA9555_0_read
+                0x0000000000000550       0x26 build/default/debug/6_3.o
+                0x0000000000000550                PCA9555_0_read
 
 .text.twi_write
-                0x000000000000055a       0x24
+                0x0000000000000576       0x24
  .text.twi_write
-                0x000000000000055a       0x24 build/default/debug/6_3.o
-                0x000000000000055a                twi_write
+                0x0000000000000576       0x24 build/default/debug/6_3.o
+                0x0000000000000576                twi_write
 
 .text.PCA9555_0_write
-                0x000000000000057e       0x24
+                0x000000000000059a       0x24
  .text.PCA9555_0_write
-                0x000000000000057e       0x24 build/default/debug/6_3.o
-                0x000000000000057e                PCA9555_0_write
+                0x000000000000059a       0x24 build/default/debug/6_3.o
+                0x000000000000059a                PCA9555_0_write
 
-.text.scan_row  0x00000000000005a2       0x22
+.text.scan_row  0x00000000000005be       0x22
  .text.scan_row
-                0x00000000000005a2       0x22 build/default/debug/6_3.o
-                0x00000000000005a2                scan_row
+                0x00000000000005be       0x22 build/default/debug/6_3.o
+                0x00000000000005be                scan_row
 
 .text.twi_readNak
-                0x00000000000005c4       0x16
+                0x00000000000005e0       0x16
  .text.twi_readNak
-                0x00000000000005c4       0x16 build/default/debug/6_3.o
-                0x00000000000005c4                twi_readNak
+                0x00000000000005e0       0x16 build/default/debug/6_3.o
+                0x00000000000005e0                twi_readNak
 
 .text.pca_lcd_clear_display
-                0x00000000000005da       0x14
+                0x00000000000005f6       0x14
  .text.pca_lcd_clear_display
-                0x00000000000005da       0x14 build/default/debug/6_3.o
-                0x00000000000005da                pca_lcd_clear_display
+                0x00000000000005f6       0x14 build/default/debug/6_3.o
+                0x00000000000005f6                pca_lcd_clear_display
 
-.text.twi_stop  0x00000000000005ee       0x12
+.text.twi_stop  0x000000000000060a       0x12
  .text.twi_stop
-                0x00000000000005ee       0x12 build/default/debug/6_3.o
-                0x00000000000005ee                twi_stop
+                0x000000000000060a       0x12 build/default/debug/6_3.o
+                0x000000000000060a                twi_stop
 
-.text.twi_init  0x0000000000000600        0xc
+.text.twi_init  0x000000000000061c        0xc
  .text.twi_init
-                0x0000000000000600        0xc build/default/debug/6_3.o
-                0x0000000000000600                twi_init
+                0x000000000000061c        0xc build/default/debug/6_3.o
+                0x000000000000061c                twi_init
 
 .text.twi_rep_start
-                0x000000000000060c        0x6
+                0x0000000000000628        0x6
  .text.twi_rep_start
-                0x000000000000060c        0x6 build/default/debug/6_3.o
-                0x000000000000060c                twi_rep_start
+                0x0000000000000628        0x6 build/default/debug/6_3.o
+                0x0000000000000628                twi_rep_start
 
-.text           0x0000000000000612        0x4
- .text          0x0000000000000612        0x4 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
-                0x0000000000000612                __vector_42
-                0x0000000000000612                __vector_22
-                0x0000000000000612                __vector_28
-                0x0000000000000612                __vector_1
-                0x0000000000000612                __vector_32
-                0x0000000000000612                __vector_34
-                0x0000000000000612                __vector_24
-                0x0000000000000612                __vector_12
-                0x0000000000000612                __bad_interrupt
-                0x0000000000000612                __vector_6
-                0x0000000000000612                __vector_31
-                0x0000000000000612                __vector_35
-                0x0000000000000612                __vector_39
-                0x0000000000000612                __vector_3
-                0x0000000000000612                __vector_23
-                0x0000000000000612                __vector_30
-                0x0000000000000612                __vector_25
-                0x0000000000000612                __vector_11
-                0x0000000000000612                __vector_13
-                0x0000000000000612                __vector_17
-                0x0000000000000612                __vector_19
-                0x0000000000000612                __vector_7
-                0x0000000000000612                __vector_41
-                0x0000000000000612                __vector_43
-                0x0000000000000612                __vector_27
-                0x0000000000000612                __vector_5
-                0x0000000000000612                __vector_33
-                0x0000000000000612                __vector_37
-                0x0000000000000612                __vector_4
-                0x0000000000000612                __vector_44
-                0x0000000000000612                __vector_9
-                0x0000000000000612                __vector_2
-                0x0000000000000612                __vector_21
-                0x0000000000000612                __vector_15
-                0x0000000000000612                __vector_36
-                0x0000000000000612                __vector_29
-                0x0000000000000612                __vector_40
-                0x0000000000000612                __vector_8
-                0x0000000000000612                __vector_26
-                0x0000000000000612                __vector_14
-                0x0000000000000612                __vector_10
-                0x0000000000000612                __vector_16
-                0x0000000000000612                __vector_18
-                0x0000000000000612                __vector_20
-                0x0000000000000612                __vector_38
+.text           0x000000000000062e        0x4
+ .text          0x000000000000062e        0x4 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
+                0x000000000000062e                __vector_42
+                0x000000000000062e                __vector_22
+                0x000000000000062e                __vector_28
+                0x000000000000062e                __vector_1
+                0x000000000000062e                __vector_32
+                0x000000000000062e                __vector_34
+                0x000000000000062e                __vector_24
+                0x000000000000062e                __vector_12
+                0x000000000000062e                __bad_interrupt
+                0x000000000000062e                __vector_6
+                0x000000000000062e                __vector_31
+                0x000000000000062e                __vector_35
+                0x000000000000062e                __vector_39
+                0x000000000000062e                __vector_3
+                0x000000000000062e                __vector_23
+                0x000000000000062e                __vector_30
+                0x000000000000062e                __vector_25
+                0x000000000000062e                __vector_11
+                0x000000000000062e                __vector_13
+                0x000000000000062e                __vector_17
+                0x000000000000062e                __vector_19
+                0x000000000000062e                __vector_7
+                0x000000000000062e                __vector_41
+                0x000000000000062e                __vector_43
+                0x000000000000062e                __vector_27
+                0x000000000000062e                __vector_5
+                0x000000000000062e                __vector_33
+                0x000000000000062e                __vector_37
+                0x000000000000062e                __vector_4
+                0x000000000000062e                __vector_44
+                0x000000000000062e                __vector_9
+                0x000000000000062e                __vector_2
+                0x000000000000062e                __vector_21
+                0x000000000000062e                __vector_15
+                0x000000000000062e                __vector_36
+                0x000000000000062e                __vector_29
+                0x000000000000062e                __vector_40
+                0x000000000000062e                __vector_8
+                0x000000000000062e                __vector_26
+                0x000000000000062e                __vector_14
+                0x000000000000062e                __vector_10
+                0x000000000000062e                __vector_16
+                0x000000000000062e                __vector_18
+                0x000000000000062e                __vector_20
+                0x000000000000062e                __vector_38

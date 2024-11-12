@@ -342,43 +342,9 @@ int main(void) {
 
     PCA9555_0_write(REG_CONFIGURATION_1,0b11110000);
     PCA9555_0_write(REG_OUTPUT_1,0x00);
-
-/*
-    while(1){
-        
-        uint8_t digit1=0,digit2=0;
-        
-        pressed_keys = scan_keypad_rising_edge();
-        digit1 = keypad_to_ascii();
-        
-        if (digit1==0) continue;
-        pca_lcd_data(digit1);
-        while(1){
-            pressed_keys = scan_keypad_rising_edge();
-            digit2 = keypad_to_ascii();
-            if (digit2==0) continue;
-            pca_lcd_data(digit2);
-            if (digit1 == '2' && digit2 == '4'){
-                PORTB = 0xff;
-                _delay_ms(3000);
-            }
-            else{
-                for(int i =0;i<5;i++){
-                    PORTB = 0xff;
-                    _delay_ms(500);
-                    PORTB = 0x00;
-                    _delay_ms(500);
-                }
-            }
-            break;
-        }
-        
-    } 
-}
-*/
     
     while (1) {
-    uint8_t digit1 = 0, digit2 = 0;
+    uint8_t digit=0,digit1 = 0, digit2 = 0;
 
     // Wait for the first key press
     while (digit1 == 0) {
@@ -387,7 +353,11 @@ int main(void) {
         if (digit1 != 0) {
             pca_lcd_data(digit1);  // Display the first digit
             // Wait until the key is released to avoid repeated readings
-            while (scan_keypad_rising_edge() != 0);
+            while (1){
+                pressed_keys = scan_keypad_rising_edge();
+                digit = keypad_to_ascii();
+                if (digit == 0) break;
+            }
         }
     }
 
@@ -398,7 +368,10 @@ int main(void) {
         if (digit2 != 0) {
             pca_lcd_data(digit2);  // Display the second digit
             // Wait until the key is released to avoid repeated readings
-            while (scan_keypad_rising_edge() != 0);
+            while (1){
+                pressed_keys = scan_keypad_rising_edge();
+                digit = keypad_to_ascii();
+                if (digit == 0) break;            }
         }
     }
 
@@ -415,6 +388,8 @@ int main(void) {
             PORTB = 0x00;
             _delay_ms(500);
         }
+        
     }
-}
+    pca_lcd_clear_display();
+    }
 }

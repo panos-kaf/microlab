@@ -160,7 +160,7 @@ uint8_t PCA9555_0_read(PCA9555_REGISTERS reg){
     return ret_val;
 }
 
-void write_2_nibbles(uint8_t input){
+void pca_write_2_nibbles(uint8_t input){
     
     unsigned char exp = PCA9555_0_read(REG_INPUT_0)&0x0f;
     unsigned char temp = input;
@@ -186,24 +186,24 @@ void write_2_nibbles(uint8_t input){
      
 }
 
-void lcd_data(unsigned char data){
+void pca_lcd_data(unsigned char data){
     PCA9555_0_write(REG_OUTPUT_0,PCA9555_0_read(REG_INPUT_0)|0b00000100);
-    write_2_nibbles(data);
+    pca_write_2_nibbles(data);
     _delay_us(250);
 }
 
-void lcd_command(unsigned char command){
+void pca_lcd_command(unsigned char command){
     PCA9555_0_write(REG_OUTPUT_0,PCA9555_0_read(REG_INPUT_0)&0b11111011);
-    write_2_nibbles(command);
+    pca_write_2_nibbles(command);
     _delay_us(250);
 }
 
-void lcd_clear_display(){
-    lcd_command(1);
+void pca_lcd_clear_display(){
+    pca_lcd_command(1);
     _delay_ms(5);
 }
 
-void lcd_init(){
+void pca_lcd_init(){
     _delay_ms(200);
     for(int i=0;i<3;i++){
         PCA9555_0_write(REG_OUTPUT_0,0x30);
@@ -221,10 +221,10 @@ void lcd_init(){
     PCA9555_0_write(REG_OUTPUT_0,PCA9555_0_read(REG_INPUT_0)&0b11110111);
     _delay_us(250);
     
-    lcd_command(0x28);
-    lcd_command(0x0c);
-    lcd_clear_display();
-    lcd_command(0x06);
+    pca_lcd_command(0x28);
+    pca_lcd_command(0x0c);
+    pca_lcd_clear_display();
+    pca_lcd_command(0x06);
 }
 
 char name1[] = "Spiros Agathos";
@@ -233,7 +233,7 @@ char name2[] = "Panos Katsalifis";
 void writeWord(char* word){
     int i = 0;
     while(word[i]!=0)
-        lcd_data(word[i++]);
+        pca_lcd_data(word[i++]);
 }
 
 
@@ -243,17 +243,16 @@ int main(void){
     
     PCA9555_0_write(REG_CONFIGURATION_0, 0x00); //Set EXT_PORT0 as output
     
-    lcd_init();
+    pca_lcd_init();
     
-    uint8_t val=0;
     while(1){
         writeWord(name1);
         _delay_ms(1000);
-        lcd_clear_display();
+        pca_lcd_clear_display();
         _delay_ms(100);
         writeWord(name2);
         _delay_ms(1000);
-        lcd_clear_display();
+        pca_lcd_clear_display();
         _delay_ms(100);
     }
 }

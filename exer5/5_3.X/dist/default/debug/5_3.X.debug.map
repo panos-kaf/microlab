@@ -346,20 +346,20 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x15b7
+.debug_info     0x0000000000000000     0x15bf
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x8ea /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
- .debug_info    0x00000000000008ea      0xccd build/default/debug/5_3.o
+ .debug_info    0x00000000000008ea      0xcd5 build/default/debug/5_3.o
 
-.debug_abbrev   0x0000000000000000      0xadf
+.debug_abbrev   0x0000000000000000      0xad0
  *(.debug_abbrev)
  .debug_abbrev  0x0000000000000000      0x86e /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
- .debug_abbrev  0x000000000000086e      0x271 build/default/debug/5_3.o
+ .debug_abbrev  0x000000000000086e      0x262 build/default/debug/5_3.o
 
-.debug_line     0x0000000000000000      0x725
+.debug_line     0x0000000000000000      0x724
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x0000000000000000      0x1a5 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
- .debug_line    0x00000000000001a5      0x580 build/default/debug/5_3.o
+ .debug_line    0x00000000000001a5      0x57f build/default/debug/5_3.o
 
 .debug_frame    0x0000000000000000      0x174
  *(.debug_frame)
@@ -407,16 +407,17 @@ LOAD data_init
  .note.gnu.avr.deviceinfo
                 0x0000000000000000       0x40 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
 
-.text.lcd_init  0x0000000000000116       0xaa
- .text.lcd_init
+.text.pca_lcd_init
+                0x0000000000000116       0xaa
+ .text.pca_lcd_init
                 0x0000000000000116       0xaa build/default/debug/5_3.o
-                0x0000000000000116                lcd_init
+                0x0000000000000116                pca_lcd_init
 
-.text.write_2_nibbles
+.text.pca_write_2_nibbles
                 0x00000000000001c0       0x7c
- .text.write_2_nibbles
+ .text.pca_write_2_nibbles
                 0x00000000000001c0       0x7c build/default/debug/5_3.o
-                0x00000000000001c0                write_2_nibbles
+                0x00000000000001c0                pca_write_2_nibbles
 
 .text.main      0x000000000000023c       0x72
  .text.main     0x000000000000023c       0x72 build/default/debug/5_3.o
@@ -434,16 +435,17 @@ LOAD data_init
                 0x00000000000002fe       0x4e build/default/debug/5_3.o
                 0x00000000000002fe                twi_start
 
-.text.lcd_data  0x000000000000034c       0x2a
- .text.lcd_data
+.text.pca_lcd_data
+                0x000000000000034c       0x2a
+ .text.pca_lcd_data
                 0x000000000000034c       0x2a build/default/debug/5_3.o
-                0x000000000000034c                lcd_data
+                0x000000000000034c                pca_lcd_data
 
-.text.lcd_command
+.text.pca_lcd_command
                 0x0000000000000376       0x2a
- .text.lcd_command
+ .text.pca_lcd_command
                 0x0000000000000376       0x2a build/default/debug/5_3.o
-                0x0000000000000376                lcd_command
+                0x0000000000000376                pca_lcd_command
 
 .text.PCA9555_0_read
                 0x00000000000003a0       0x26
@@ -475,11 +477,11 @@ LOAD data_init
                 0x000000000000042c       0x16 build/default/debug/5_3.o
                 0x000000000000042c                twi_readNak
 
-.text.lcd_clear_display
+.text.pca_lcd_clear_display
                 0x0000000000000442       0x14
- .text.lcd_clear_display
+ .text.pca_lcd_clear_display
                 0x0000000000000442       0x14 build/default/debug/5_3.o
-                0x0000000000000442                lcd_clear_display
+                0x0000000000000442                pca_lcd_clear_display
 
 .text.twi_stop  0x0000000000000456       0x12
  .text.twi_stop
