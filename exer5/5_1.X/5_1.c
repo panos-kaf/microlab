@@ -176,11 +176,8 @@ int main(void) {
         pinb = PINB;
         A = !(pinb&(0x01));
         B = !(pinb&(0x02));
-        //B>>=1;
         C = !(pinb&(0x04));
-        //C>>=2;
         D = !(pinb&(0x08));
-        //D>>=3;
         
         F0 = !((!A&B&C)|(!B&D));
         F1 = (A|B|C)&(B&!D);
