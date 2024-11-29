@@ -308,7 +308,7 @@ uint8_t sign,d1,d2,d3,d4,d5,d6;
 
 void digits(uint16_t value){
     //value = ~value+1;
-    sign = value&(0x8000)>>15;
+    sign = value&(0xf800);
     value=(value&0x07f0)>>4;
     uint8_t decimal = value&(0x0f);
     

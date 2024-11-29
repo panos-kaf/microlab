@@ -371,7 +371,8 @@ int main(void) {
             while (1){
                 pressed_keys = scan_keypad_rising_edge();
                 digit = keypad_to_ascii();
-                if (digit == 0) break;            }
+                if (digit == 0) break;
+            }
         }
     }
 
