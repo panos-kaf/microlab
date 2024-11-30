@@ -38,12 +38,11 @@ uint8_t one_wire_receive_bit(){
 }
 
 void one_wire_transmit_bit(uint8_t bit){
-    //uint8_t bit = PIND&(1<<PD4);
     DDRD |= (1<<PD4);
     PORTD &= ~(1<<PD4);
     _delay_us(2);
 
-    PORTD|=(bit<<PD4); //?
+    PORTD|=(bit<<PD4);
     
     _delay_us(58);
     DDRD &= ~(1<<PD4);
