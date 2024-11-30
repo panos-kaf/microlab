@@ -177,19 +177,6 @@ uint16_t scan_keypad(){
     return res;
 }
 
-/*
-uint16_t scan_keypad_rising_edge(){
-
-    uint16_t pressed_keys_tempo = scan_keypad();
-    _delay_ms(20);
-    pressed_keys_tempo = scan_keypad();
-    
-    pressed_keys = pressed_keys_tempo;
-    
-    return pressed_keys;
-}
- */
-
 uint16_t scan_keypad_rising_edge() {
     pressed_keys = 0;
     uint16_t pressed_keys_tempo = scan_keypad(); // Scan the keypad
@@ -206,17 +193,19 @@ uint16_t scan_keypad_rising_edge() {
 }
 
 /*
-        1101
-        0111
-        1110
-        0111
- 
-row1= pressed_keys&0f<<4;
-row1+= 0b1110;
-// 1110 0111
-if row1 == 1110 0111 then ascii = 'D';
-
- */
+* example for keypad_to_ascii 
+*
+*        	1101
+*        	0111
+*       	1110
+*   	    0111
+* 
+*	row1= pressed_keys&0f<<4;
+*	row1+= 0b1110;
+*	1110 0111
+*	if row1 == 1110 0111 then ascii = 'D';
+*
+*/
 
 uint8_t keypad_to_ascii(){
     uint8_t row0,row1,row2,row3;
