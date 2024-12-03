@@ -8,6 +8,7 @@
 #define F_CPU 16000000UL
 
 #include <string.h>
+#include <stdlib.h>
 #include<avr/io.h>
 #include<avr/interrupt.h>
 #include<util/delay.h>
@@ -226,6 +227,136 @@ void pca_lcd_init(){
     pca_lcd_command(0x06);
 }
 
+// ??????????
+
+uint8_t one_wire_reset(){
+    uint8_t temp;
+    DDRD |= (1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(480);
+    DDRD &= ~(1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(100);
+    temp = PIND;
+    _delay_us(380);
+    if(temp&(1<<PD4)) return 0;
+    return 1;
+}
+
+uint8_t one_wire_receive_bit(){
+    uint8_t bit=0;
+    DDRD |= (1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(2);
+    DDRD &= ~(1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(10);
+    if(PIND&(1<<PD4)) bit=1;
+    _delay_us(49);
+    return bit;
+}
+
+void one_wire_transmit_bit(uint8_t bit){
+    //uint8_t bit = PIND&(1<<PD4);
+    DDRD |= (1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(2);
+    /*if (bit&0x01) PORTD |= (1<<PD4);          // ????
+    if (bit&0x01) PORTD &= ~(1<<PD4);*/
+    PORTD|=(bit<<PD4); //?
+    
+    _delay_us(58);
+    DDRD &= ~(1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(1);  
+}
+
+uint8_t one_wire_receive_byte(){
+    uint8_t byte=0;
+    for (uint8_t i =0;i<8;i++){
+        byte += one_wire_receive_bit()<<i;
+    }
+    return byte;
+}   
+
+void one_wire_transmit_byte(uint8_t byte){
+    for(uint8_t i=0;i<8;i++){
+        uint8_t bit = (byte>>i)&0x01;
+        one_wire_transmit_bit(bit);
+    }
+}
+
+int16_t read_temp(){
+    int16_t value;
+    if(one_wire_reset()==0) return 0x8000;
+    one_wire_transmit_byte(0xCC);
+    one_wire_transmit_byte(0x44);
+    
+    while(one_wire_receive_bit()==0);
+    
+    if(one_wire_reset()==0) return 0x8000;
+    one_wire_transmit_byte(0xCC);
+    one_wire_transmit_byte(0xBE);
+    value = one_wire_receive_byte();
+    value += one_wire_receive_byte()<<8;
+    return value;
+}
+
+uint8_t sign;
+char d[6];
+
+void temp_digits(uint16_t value){
+    //value = ~value+1;
+    sign = value&(0xf800);
+    value=(value&0x07f0)>>4;
+    uint8_t decimal = value&(0x0f);
+    
+    int result = (int)value;
+    
+    double dval = decimal*62.5;
+    
+    d[4] = (int)dval/100;
+    d[5] = (int)dval/10;
+    d[5] %= 10;
+    d[6] = (int)dval%10;
+    
+    d[1] = result/100;
+    d[2] = result/10;
+    d[2] %= 10;
+    d[3] = result%10;
+}
+
+void output_temp(){
+    if(sign==0)
+        pca_lcd_data('+');
+    else pca_lcd_data('-');
+    
+    d[1]+=48;
+    d[2]+=48;
+    d[3]+=48;  
+    d[4]+=48;
+    d[5]+=48;
+    d[6]+=48;
+    
+    if(d[1]!=48)
+        pca_lcd_data(d[1]);
+    if(d[1]!=48 || d[2]!=48)
+        pca_lcd_data(d[2]);
+    pca_lcd_data(d[3]);
+    pca_lcd_data('.');
+    pca_lcd_data(d[4]);
+    if(d[5]!=48 || d[6]!=48)
+        pca_lcd_data(d[5]);
+    if(d[6]!=48)
+        pca_lcd_data(d[6]);
+    
+    pca_lcd_data(0xDF);
+    pca_lcd_data('C');
+}
+
+//
+
+
 void usart_init(unsigned int ubrr){
     UCSR0A=0;
     UCSR0B=(1<<RXEN0)|(1<<TXEN0);
@@ -266,10 +397,155 @@ void receive_word(char* buffer, size_t max_size) {
     }
     buffer[i] = '\0';  // Null-terminate the string
 }
+
 void print_lcd(char* str){
     int i = 0;
     while(str[i]!=0)
         pca_lcd_data(str[i++]);
+}
+
+// Pressure
+
+char pressure[3];
+
+void pressure_digits(int value){
+    int result = (int)value;
+    pressure[0] = result/100;
+    pressure[1] = result/10;
+    pressure[1] %= 10;
+    pressure[2] = result%10;
+}
+
+void pressure_output(){
+    pressure[0]+=48;
+    pressure[1]+=48;
+    pressure[2]+=48;
+    pca_lcd_data(pressure[0]);
+    pca_lcd_data(pressure[1]);
+    pca_lcd_data(0b00101110);
+    pca_lcd_data(pressure[2]);
+}
+
+//
+
+
+// Keypad
+
+uint16_t pressed_keys=0;
+
+uint8_t scan_row(uint8_t row){
+    
+    uint8_t temp = ~(0x01 << row);
+    PCA9555_0_write(REG_OUTPUT_1,temp);
+    return (PCA9555_0_read(REG_INPUT_1)&0xf0)>>4;
+}
+
+uint16_t scan_keypad(){
+    uint16_t res=0;
+    for(int i=0;i<4;i++)
+        res+=scan_row(i)<<4*i;   
+    return res;
+}
+
+uint16_t scan_keypad_rising_edge() {
+    pressed_keys = 0;
+    uint16_t pressed_keys_tempo = scan_keypad(); // Scan the keypad
+    _delay_ms(20);                               // Debounce delay
+    pressed_keys_tempo = scan_keypad();          // Scan again after delay
+
+    // Rising edge detection: keys that are pressed now but weren't in the last scan
+    uint16_t rising_edge_keys = (pressed_keys_tempo) & ~(pressed_keys);
+
+    // Update last_pressed_keys for the next call
+    pressed_keys = pressed_keys_tempo;
+
+    return rising_edge_keys; // Return only the keys that were newly pressed
+}
+
+/*
+        1101
+        0111
+        1110
+        0111
+ 
+row1= pressed_keys&0f<<4;
+row1+= 0b1110;
+// 1110 0111
+if row1 == 1110 0111 then ascii = 'D';
+
+ */
+
+uint8_t keypad_to_ascii(){
+    uint8_t row0,row1,row2,row3;
+    
+    row0 = (pressed_keys&0x000f)<<4;
+    row0 += 0b1110;
+    
+    row1 = (pressed_keys&0x00f0);
+    row1 += 0b1101;
+    
+    row2 = (pressed_keys&0x0f00)>>4;
+    row2 += 0b1011;
+    
+    row3 = (pressed_keys&0xf000)>>8;
+    row3 += 0b0111;
+        
+    switch (row0){
+        case 0b11101110: 
+            return '*';
+        case 0b11011110:
+            return '0';
+        case 0b10111110:
+            return '#';
+        case 0b01111110:
+            return 'D';
+    }
+        switch (row1){
+        case 0b11101101: 
+            return '7';
+        case 0b11011101:
+            return '8';
+        case 0b10111101:
+            return '9';
+        case 0b01111101:
+            return 'C';
+    }
+    
+        switch (row2){
+        case 0b11101011: 
+            return '4';
+        case 0b11011011:
+            return '5';
+        case 0b10111011:
+            return '6';
+        case 0b01111011:
+            return 'B';
+    }
+    
+        switch (row3){
+        case 0b11100111: 
+            return '1';
+        case 0b11010111:
+            return '2';
+        case 0b10110111:
+            return '3';
+        case 0b01110111:
+            return 'A';       
+    }
+    return 0;
+}
+
+//
+
+#include <stdio.h>
+
+void create_payload(char *buffer, size_t buffer_size, int team, const char *status) {
+    snprintf(buffer, buffer_size,
+             " ESP:payload:[{\"name\": \"temperature\",\"value\": \"%c%c.%c\"},"
+             "{\"name\": \"pressure\",\"value\": \"%c%c.%c\"},"
+             "{\"name\": \"team\",\"value\": \"%d\"},"
+             "{\"name\": \"status\",\"value\": \"%s\"}]\n",
+             d[2],d[3],d[4], pressure[0],pressure[1],pressure[2], team, status);
 }
 
 int check_count=0; 
@@ -283,16 +559,31 @@ void check(char* answer){
     print_lcd(message);
 }
 
-void create_payload(char *buffer, size_t buffer_size, int team, const char *status) {
-    snprintf(buffer, buffer_size," ESP:payload:[{\"name\": \"temperature\",\"value\": \"%c%c.%c\"},{\"name\": \"pressure\",\"value\": \"%c%c.%c\"},{\"name\": \"team\",\"value\": \"%d\"},{\"name\": \"status\",\"value\": \"%s\"}]\n",49,49,49,49,49,49, team, status);
-}
-
-
 int main(void) {
+    
+    
+    
+    TCCR1A |= (1<<WGM10)|(1<<COM1A1);
+    TCCR1B |= (1<<WGM12)|(1<<CS12);     //prescaler = 256
+        
+    DDRC=0x00;
+    
+    ADMUX = 0b01000000;
+    ADCSRA = 0b10000111;    
+    
     char answer[256];
+    char* status="OK";
+    uint8_t key;
+    
     twi_init();
+    
+    PCA9555_0_write(REG_CONFIGURATION_1,0b11110000);  
     PCA9555_0_write(REG_CONFIGURATION_0,0x00);    
+    
     pca_lcd_init();
+    
+    PCA9555_0_write(REG_OUTPUT_1,0x00);
+    
     usart_init(103);
     
     transmit_word("ESP:restart\n");
@@ -315,20 +606,62 @@ int main(void) {
     transmit_word("ESP:url:\"http://192.168.1.250:5000/data\"\n");
     receive_word(answer,256);
     check(answer);
-    
+
     _delay_ms(4000);
-    //pca_lcd_clear_display();
-    
-    //create_payload(answer,256,24,"OK");
-    //transmit_word(answer);
-    transmit_word("ESP:payload:[{\"name\": \"team\",\"value\": \"88\"}]\"\n");
-    receive_word(answer,256);
-    check(answer);
-    _delay_ms(1000); 
     pca_lcd_clear_display();
-    transmit_word("ESP:transmit\n");
-    receive_word(answer,256);
-    print_lcd(answer);
-    
-    while(1);
+           
+    while(1){
+        
+        ADCSRA|=(1<<ADSC);
+        while(ADCSRA & (1<<ADSC));
+        int pres = ADC/5.11;
+        int16_t temp = read_temp()+16*12;
+        temp_digits(temp);
+        pressure_digits(pres);
+        
+        pres/=10;
+        temp&=0x07FF;
+        temp/=16;
+        
+        
+        if (pres>=12 || pres<4){
+            status="CHECK PRESSURE";
+            if (temp<34 || temp>=37)
+                status="CHECK BOTH";
+        }
+        else if ((temp<34 || temp>=37))
+            status="CHECK TEMP";         
+       
+        pressed_keys = scan_keypad_rising_edge();
+        key = keypad_to_ascii();
+        if(key=='#' && strcmp("NURSE CALL",status)==0)
+            status="OK";
+        
+        pressed_keys = scan_keypad_rising_edge();
+        key = keypad_to_ascii();
+        if(key=='4')
+            status="NURSE CALL";
+        
+        
+        print_lcd(status);
+        pca_lcd_command(0b11000000);
+        output_temp();
+        print_lcd(" | ");
+        pressure_output();
+        _delay_ms(500);
+        pca_lcd_clear_display();
+        
+        char payload[512];
+        create_payload(payload,sizeof(payload),24,status);
+        transmit_word(payload);
+        receive_word(answer,256);
+        check(answer);
+        transmit_word("ESP:transmit\n");
+        receive_word(answer,256);
+        pca_lcd_command(0b11000000);
+        print_lcd(answer);
+        //check(answer);
+        _delay_ms(2000);
+                
+    }
 }

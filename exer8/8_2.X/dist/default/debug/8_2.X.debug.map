@@ -471,10 +471,10 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0x2122
+.debug_info     0x0000000000000000     0x2128
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x0000000000000000      0x8ea /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
- .debug_info    0x00000000000008ea     0x1838 build/default/debug/8_2.o
+ .debug_info    0x00000000000008ea     0x183e build/default/debug/8_2.o
 
 .debug_abbrev   0x0000000000000000      0xbf3
  *(.debug_abbrev)

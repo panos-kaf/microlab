@@ -88,14 +88,14 @@ MP_PROCESSOR_OPTION=ATmega328PB
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/8_1.o: 8_1.c  .generated_files/flags/default/cead835d30f8c16ef29a3be75d885bd34f806e8b .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/8_1.o: 8_1.c  .generated_files/flags/default/4b4a1732c69598d2d454fca837a992366416e364 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/8_1.o.d 
 	@${RM} ${OBJECTDIR}/8_1.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE) -mcpu=$(MP_PROCESSOR_OPTION) -c  -D__DEBUG=1 -g -DDEBUG  -gdwarf-2  -x c -D__$(MP_PROCESSOR_OPTION)__    -Wl,--gc-sections -O1 -ffunction-sections -fdata-sections -fshort-enums -funsigned-char -funsigned-bitfields -Wall -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -gdwarf-3 -mno-const-data-in-progmem     -MD -MP -MF "${OBJECTDIR}/8_1.o.d" -MT "${OBJECTDIR}/8_1.o.d" -MT ${OBJECTDIR}/8_1.o -o ${OBJECTDIR}/8_1.o 8_1.c 
 	
 else
-${OBJECTDIR}/8_1.o: 8_1.c  .generated_files/flags/default/3701d11f784babe0aac20166f5f9394365ebb22f .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/8_1.o: 8_1.c  .generated_files/flags/default/6337fbb25001f09ca381f06a1084219c8be1630a .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/8_1.o.d 
 	@${RM} ${OBJECTDIR}/8_1.o 
