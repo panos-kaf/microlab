@@ -315,20 +315,6 @@ int main(void) {
     transmit_word("ESP:url:\"http://192.168.1.250:5000/data\"\n");
     receive_word(answer,256);
     check(answer);
-    
     _delay_ms(4000);
-    //pca_lcd_clear_display();
-    
-    //create_payload(answer,256,24,"OK");
-    //transmit_word(answer);
-    transmit_word("ESP:payload:[{\"name\": \"team\",\"value\": \"88\"}]\"\n");
-    receive_word(answer,256);
-    check(answer);
-    _delay_ms(1000); 
-    pca_lcd_clear_display();
-    transmit_word("ESP:transmit\n");
-    receive_word(answer,256);
-    print_lcd(answer);
-    
     while(1);
 }

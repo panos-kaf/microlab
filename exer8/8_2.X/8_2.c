@@ -8,6 +8,7 @@
 #define F_CPU 16000000UL
 
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include<avr/io.h>
 #include<avr/interrupt.h>
@@ -303,7 +304,7 @@ int16_t read_temp(){
 }
 
 uint8_t sign;
-char d[6];
+char temperature[6];
 
 void temp_digits(uint16_t value){
     //value = ~value+1;
@@ -315,15 +316,15 @@ void temp_digits(uint16_t value){
     
     double dval = decimal*62.5;
     
-    d[4] = (int)dval/100;
-    d[5] = (int)dval/10;
-    d[5] %= 10;
-    d[6] = (int)dval%10;
+    temperature[4] = (int)dval/100;
+    temperature[5] = (int)dval/10;
+    temperature[5] %= 10;
+    temperature[6] = (int)dval%10;
     
-    d[1] = result/100;
-    d[2] = result/10;
-    d[2] %= 10;
-    d[3] = result%10;
+    temperature[1] = result/100;
+    temperature[2] = result/10;
+    temperature[2] %= 10;
+    temperature[3] = result%10;
 }
 
 void output_temp(){
@@ -331,24 +332,24 @@ void output_temp(){
         pca_lcd_data('+');
     else pca_lcd_data('-');
     
-    d[1]+=48;
-    d[2]+=48;
-    d[3]+=48;  
-    d[4]+=48;
-    d[5]+=48;
-    d[6]+=48;
+    temperature[1]+=48;
+    temperature[2]+=48;
+    temperature[3]+=48;  
+    temperature[4]+=48;
+    temperature[5]+=48;
+    temperature[6]+=48;
     
-    if(d[1]!=48)
-        pca_lcd_data(d[1]);
-    if(d[1]!=48 || d[2]!=48)
-        pca_lcd_data(d[2]);
-    pca_lcd_data(d[3]);
+    if(temperature[1]!=48)
+        pca_lcd_data(temperature[1]);
+    if(temperature[1]!=48 || temperature[2]!=48)
+        pca_lcd_data(temperature[2]);
+    pca_lcd_datatemperature([3]);
     pca_lcd_data('.');
-    pca_lcd_data(d[4]);
-    if(d[5]!=48 || d[6]!=48)
-        pca_lcd_data(d[5]);
-    if(d[6]!=48)
-        pca_lcd_data(d[6]);
+    pca_lcd_data(temperature[4]);
+    if(temperature[5]!=48 || temperature[6]!=48)
+        pca_lcd_data(temperature[5]);
+    if(temperature[6]!=48)
+        pca_lcd_data(temperature[6]);
     
     pca_lcd_data(0xDF);
     pca_lcd_data('C');
@@ -406,18 +407,7 @@ void print_lcd(char* str){
 
 
 
-#include <stdio.h>
 
-/*
-void create_payload(char *buffer, size_t buffer_size, uint8_t* temp_digits, float pressure, int team, const char *status) {
-    snprintf(buffer, buffer_size,
-             "payload: [{\"name\": \"temperature\",\"value\": \"%.1f\"},"
-             "{\"name\": \"pressure\",\"value\": \"%.1f\"},"
-             "{\"name\": \"team\",\"value\": \"%d\"},"
-             "{\"name\": \"status\",\"value\": \"%s\"}]",
-             temp_digits, pressure, team, status);
-}
-*/
 //transmit_word(payload);
 
 // Pressure
@@ -553,10 +543,14 @@ uint8_t keypad_to_ascii(){
 
 //
 
-void write_word(char* str){
-    int i = 0;
-    while(str[i]!=0)
-        pca_lcd_data(str[i++]);
+void create_payload(char *buffer, size_t buffer_size, int team, const char *status) {
+    snprintf(buffer, buffer_size,
+             " ESP:payload:[{\"name\": \"temperature\",\"value\": \"%c%c.%c\"},"
+             "{\"name\": \"pressure\",\"value\": \"%c%c.%c\"},"
+             "{\"name\": \"team\",\"value\": \"%d\"},"
+             "{\"name\": \"status\",\"value\": \"%s\"}]\n",
+             temperature[2],temperature[3],temperature[4], 
+            pressure[0],pressure[1],pressure[2], team, status);
 }
 
 int main(void) {
@@ -615,37 +609,16 @@ int main(void) {
             status="NURSE CALL";
         
         
-        write_word(status);
+        print_lcd(status);
         pca_lcd_command(0b11000000);
         output_temp();
-        write_word(" | ");
+        print_lcd(" | ");
         pressure_output();
         _delay_ms(500);
         pca_lcd_clear_display();
+
+        char payload[256];
+		create_payload(payload,sizeof(payload),24,status);
         
-        char* payload[9];
-        char t[5],p[5];
-        
-        t[0] = d[2];
-        t[1] = d[3];
-        t[2] = '.';
-        t[3] = d[4];
-        p[0] = pressure[0];
-        p[1] = pressure[1];
-        p[2] = '.';
-        p[3] = pressure[2];
-           
-        payload[0] = "ESP:payload:[{\"name\": \"temperature\",\"value\": \"";
-        payload[1] = t;
-        payload[2] = "\"},{\"name\": \"pressure\",\"value\": \"";
-        payload[3] = p;
-        payload[4] = "\"},{\"name\": \"team\",\"value\": \"24\"}"
-                     ",{\"name\": \"status\",\"value\": \"";
-        payload[5] = status;
-        payload[6] = "\"}]\n";
-        
-        for(int i=0;i<7;i++)
-            transmit_word(payload[i]);
-    
     }
 }
