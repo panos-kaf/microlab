@@ -7,15 +7,23 @@
 
 #define F_CPU 16000000UL
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include<avr/io.h>
-#include<avr/interrupt.h>
-#include<util/delay.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
 #define PCA9555_0_ADDRESS 0x40 
 #define TWI_READ 1 
 #define TWI_WRITE 0 
 #define SCL_CLOCK 100000L 
+
+
+// Global Variables
+uint16_t pressed_keys=0;
+uint8_t temp_sign;
+char temperature[7],pressure[4];
+//
 
 //A0=A1=A2=0 by hardware
 // reading from twi device
@@ -160,6 +168,9 @@ uint8_t PCA9555_0_read(PCA9555_REGISTERS reg){
     return ret_val;
 }
 
+
+// LCD
+
 void pca_write_2_nibbles(uint8_t input){
     
     unsigned char exp = PCA9555_0_read(REG_INPUT_0)&0x0f;
@@ -227,211 +238,15 @@ void pca_lcd_init(){
     pca_lcd_command(0x06);
 }
 
-// ??????????
-
-uint8_t one_wire_reset(){
-    uint8_t temp;
-    DDRD |= (1<<PD4);
-    PORTD &= ~(1<<PD4);
-    _delay_us(480);
-    DDRD &= ~(1<<PD4);
-    PORTD &= ~(1<<PD4);
-    _delay_us(100);
-    temp = PIND;
-    _delay_us(380);
-    if(temp&(1<<PD4)) return 0;
-    return 1;
-}
-
-uint8_t one_wire_receive_bit(){
-    uint8_t bit=0;
-    DDRD |= (1<<PD4);
-    PORTD &= ~(1<<PD4);
-    _delay_us(2);
-    DDRD &= ~(1<<PD4);
-    PORTD &= ~(1<<PD4);
-    _delay_us(10);
-    if(PIND&(1<<PD4)) bit=1;
-    _delay_us(49);
-    return bit;
-}
-
-void one_wire_transmit_bit(uint8_t bit){
-    //uint8_t bit = PIND&(1<<PD4);
-    DDRD |= (1<<PD4);
-    PORTD &= ~(1<<PD4);
-    _delay_us(2);
-    /*if (bit&0x01) PORTD |= (1<<PD4);          // ????
-    if (bit&0x01) PORTD &= ~(1<<PD4);*/
-    PORTD|=(bit<<PD4); //?
-    
-    _delay_us(58);
-    DDRD &= ~(1<<PD4);
-    PORTD &= ~(1<<PD4);
-    _delay_us(1);  
-}
-
-uint8_t one_wire_receive_byte(){
-    uint8_t byte=0;
-    for (uint8_t i =0;i<8;i++){
-        byte += one_wire_receive_bit()<<i;
-    }
-    return byte;
-}   
-
-void one_wire_transmit_byte(uint8_t byte){
-    for(uint8_t i=0;i<8;i++){
-        uint8_t bit = (byte>>i)&0x01;
-        one_wire_transmit_bit(bit);
-    }
-}
-
-int16_t read_temp(){
-    int16_t value;
-    if(one_wire_reset()==0) return 0x8000;
-    one_wire_transmit_byte(0xCC);
-    one_wire_transmit_byte(0x44);
-    
-    while(one_wire_receive_bit()==0);
-    
-    if(one_wire_reset()==0) return 0x8000;
-    one_wire_transmit_byte(0xCC);
-    one_wire_transmit_byte(0xBE);
-    value = one_wire_receive_byte();
-    value += one_wire_receive_byte()<<8;
-    return value;
-}
-
-uint8_t sign;
-char d[6];
-
-void temp_digits(uint16_t value){
-    //value = ~value+1;
-    sign = value&(0xf800);
-    value=(value&0x07f0)>>4;
-    uint8_t decimal = value&(0x0f);
-    
-    int result = (int)value;
-    
-    double dval = decimal*62.5;
-    
-    d[4] = (int)dval/100;
-    d[5] = (int)dval/10;
-    d[5] %= 10;
-    d[6] = (int)dval%10;
-    
-    d[1] = result/100;
-    d[2] = result/10;
-    d[2] %= 10;
-    d[3] = result%10;
-}
-
-void output_temp(){
-    if(sign==0)
-        pca_lcd_data('+');
-    else pca_lcd_data('-');
-    
-    d[1]+=48;
-    d[2]+=48;
-    d[3]+=48;  
-    d[4]+=48;
-    d[5]+=48;
-    d[6]+=48;
-    
-    if(d[1]!=48)
-        pca_lcd_data(d[1]);
-    if(d[1]!=48 || d[2]!=48)
-        pca_lcd_data(d[2]);
-    pca_lcd_data(d[3]);
-    pca_lcd_data('.');
-    pca_lcd_data(d[4]);
-    if(d[5]!=48 || d[6]!=48)
-        pca_lcd_data(d[5]);
-    if(d[6]!=48)
-        pca_lcd_data(d[6]);
-    
-    pca_lcd_data(0xDF);
-    pca_lcd_data('C');
-}
-
-//
-
-
-void usart_init(unsigned int ubrr){
-    UCSR0A=0;
-    UCSR0B=(1<<RXEN0)|(1<<TXEN0);
-    UBRR0H=(unsigned char)(ubrr>>8);
-    UBRR0L=(unsigned char)ubrr;
-    UCSR0C=(3 << UCSZ00);
-    return;
-}
-
-void usart_transmit(uint8_t data){
-    while(!(UCSR0A&(1<<UDRE0)));
-    UDR0=data;
-}
-
-uint8_t usart_receive(){
-while(!(UCSR0A&(1<<RXC0)));
-return UDR0;
-}
-
-void transmit_word(char* word){
-    int i = 0;
-    while(word[i]!=0){
-        usart_transmit(word[i++]);
-    }
-}
-
-void receive_word(char* buffer, size_t max_size) {
-    int i = 0;
-
-    while (1) {
-        char letter = usart_receive();
-        if (i < max_size - 1) {
-            buffer[i++] = letter;  // Add character to buffer
-        }
-        if (letter == '\n') {
-            break;
-        }
-    }
-    buffer[i] = '\0';  // Null-terminate the string
-}
-
 void print_lcd(char* str){
     int i = 0;
     while(str[i]!=0)
         pca_lcd_data(str[i++]);
 }
 
-// Pressure
-
-char pressure[3];
-
-void pressure_digits(int value){
-    int result = (int)value;
-    pressure[0] = result/100;
-    pressure[1] = result/10;
-    pressure[1] %= 10;
-    pressure[2] = result%10;
-}
-
-void pressure_output(){
-    pressure[0]+=48;
-    pressure[1]+=48;
-    pressure[2]+=48;
-    pca_lcd_data(pressure[0]);
-    pca_lcd_data(pressure[1]);
-    pca_lcd_data(0b00101110);
-    pca_lcd_data(pressure[2]);
-}
-
-//
-
 
 // Keypad
 
-uint16_t pressed_keys=0;
 
 uint8_t scan_row(uint8_t row){
     
@@ -535,9 +350,195 @@ uint8_t keypad_to_ascii(){
     return 0;
 }
 
-//
 
-#include <stdio.h>
+// One wire - temperature
+
+uint8_t one_wire_reset(){
+    uint8_t temp;
+    DDRD |= (1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(480);
+    DDRD &= ~(1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(100);
+    temp = PIND;
+    _delay_us(380);
+    if(temp&(1<<PD4)) return 0;
+    return 1;
+}
+
+uint8_t one_wire_receive_bit(){
+    uint8_t bit=0;
+    DDRD |= (1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(2);
+    DDRD &= ~(1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(10);
+    if(PIND&(1<<PD4)) bit=1;
+    _delay_us(49);
+    return bit;
+}
+
+void one_wire_transmit_bit(uint8_t bit){
+    DDRD |= (1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(2);
+    PORTD|=(bit<<PD4);
+    _delay_us(58);
+    DDRD &= ~(1<<PD4);
+    PORTD &= ~(1<<PD4);
+    _delay_us(1);  
+}
+
+uint8_t one_wire_receive_byte(){
+    uint8_t byte=0;
+    for (uint8_t i =0;i<8;i++){
+        byte += one_wire_receive_bit()<<i;
+    }
+    return byte;
+}   
+
+void one_wire_transmit_byte(uint8_t byte){
+    for(uint8_t i=0;i<8;i++){
+        uint8_t bit = (byte>>i)&0x01;
+        one_wire_transmit_bit(bit);
+    }
+}
+
+int16_t read_temp(){
+    int16_t value;
+    if(one_wire_reset()==0) return 0x8000;
+    one_wire_transmit_byte(0xCC);
+    one_wire_transmit_byte(0x44);
+    
+    while(one_wire_receive_bit()==0);
+    
+    if(one_wire_reset()==0) return 0x8000;
+    one_wire_transmit_byte(0xCC);
+    one_wire_transmit_byte(0xBE);
+    value = one_wire_receive_byte();
+    value += one_wire_receive_byte()<<8;
+    return value;
+}
+
+void temp_digits(uint16_t value){
+    //value = ~value+1;
+    temp_sign = value&(0xf800);
+    value=(value&0x07f0)>>4;
+    uint8_t decimal = value&(0x0f);
+    
+    int result = (int)value;
+    
+    double dval = decimal*62.5;
+    
+    temperature[4] = (int)dval/100;
+    temperature[5] = (int)dval/10;
+    temperature[5] %= 10;
+    temperature[6] = (int)dval%10;
+    
+    temperature[1] = result/100;
+    temperature[2] = result/10;
+    temperature[2] %= 10;
+    temperature[3] = result%10;
+}
+
+void output_temp(){
+    if(temp_sign==0)
+        pca_lcd_data('+');
+    else pca_lcd_data('-');
+    
+    temperature[1]+=48;
+    temperature[2]+=48;
+    temperature[3]+=48;  
+    temperature[4]+=48;
+    temperature[5]+=48;
+    temperature[6]+=48;
+    
+    if(temperature[1]!=48)
+        pca_lcd_data(temperature[1]);
+    if(temperature[1]!=48 || temperature[2]!=48)
+        pca_lcd_data(temperature[2]);
+    pca_lcd_data(temperature[3]);
+    pca_lcd_data('.');
+    pca_lcd_data(temperature[4]);
+    if(temperature[5]!=48 || temperature[6]!=48)
+        pca_lcd_data(temperature[5]);
+    if(temperature[6]!=48)
+        pca_lcd_data(temperature[6]);
+    
+    pca_lcd_data(0xDF);
+    pca_lcd_data('C');
+}
+
+
+//  UART
+
+void usart_init(unsigned int ubrr){
+    UCSR0A=0;
+    UCSR0B=(1<<RXEN0)|(1<<TXEN0);
+    UBRR0H=(unsigned char)(ubrr>>8);
+    UBRR0L=(unsigned char)ubrr;
+    UCSR0C=(3 << UCSZ00);
+    return;
+}
+
+void usart_transmit(uint8_t data){
+    while(!(UCSR0A&(1<<UDRE0)));
+    UDR0=data;
+}
+
+uint8_t usart_receive(){
+while(!(UCSR0A&(1<<RXC0)));
+return UDR0;
+}
+
+void transmit_word(char* word){
+    int i = 0;
+    while(word[i]!=0){
+        usart_transmit(word[i++]);
+    }
+}
+
+void receive_word(char* buffer,size_t size) {
+    int i = 0;
+    //int size = sizeof(buffer);
+
+    while (1) {
+        char letter = usart_receive();
+        if (i < size - 1) {
+            buffer[i++] = letter;  // Add character to buffer
+        }
+        if (letter == '\n') {
+            break;
+        }
+    }
+    buffer[i] = '\0';  // Null-terminate the string
+}
+
+// Pressure
+
+void pressure_digits(int value){
+    int result = (int)value;
+    pressure[0] = result/100;
+    pressure[1] = result/10;
+    pressure[1] %= 10;
+    pressure[2] = result%10;
+}
+
+void pressure_output(){
+    pressure[0]+=48;
+    pressure[1]+=48;
+    pressure[2]+=48;
+    if(pressure[0]!=48)
+        pca_lcd_data(pressure[0]);
+    pca_lcd_data(pressure[1]);
+    pca_lcd_data(0b00101110);
+    pca_lcd_data(pressure[2]);
+}
+
+
+//
 
 void create_payload(char *buffer, size_t buffer_size, int team, const char *status) {
     snprintf(buffer, buffer_size,
@@ -545,23 +546,25 @@ void create_payload(char *buffer, size_t buffer_size, int team, const char *stat
              "{\"name\": \"pressure\",\"value\": \"%c%c.%c\"},"
              "{\"name\": \"team\",\"value\": \"%d\"},"
              "{\"name\": \"status\",\"value\": \"%s\"}]\n",
-             d[2],d[3],d[4], pressure[0],pressure[1],pressure[2], team, status);
+             temperature[2],temperature[3],temperature[4], 
+            pressure[0],pressure[1],pressure[2], team, status);
 }
 
-int check_count=0; 
-
-void check(char* answer){
-    check_count++;
+void check(char* answer,int num){
     char message[256];
     if (strcmp(answer,"\"Success\"\n")==0)
-        snprintf(message,sizeof(message),"%d.Success",check_count);
-    else snprintf(message,sizeof(message),"%d.Fail",check_count);
+        snprintf(message,sizeof(message),"%d.Success",num);
+    else snprintf(message,sizeof(message),"%d.Fail",num);
+    print_lcd(message);
+}
+
+void check_transmit(char* answer,int num){
+    char message[256];
+    snprintf(message,sizeof(message),"%d.%s",num,answer);
     print_lcd(message);
 }
 
 int main(void) {
-    
-    
     
     TCCR1A |= (1<<WGM10)|(1<<COM1A1);
     TCCR1B |= (1<<WGM12)|(1<<CS12);     //prescaler = 256
@@ -571,10 +574,11 @@ int main(void) {
     ADMUX = 0b01000000;
     ADCSRA = 0b10000111;    
     
-    char answer[256];
-    char* status="OK";
+    char answer[256],payload[256];
+    char *status="OK",*prev_status="0";
     uint8_t key;
-    
+    int16_t temp;
+    int pres, counter=0;
     twi_init();
     
     PCA9555_0_write(REG_CONFIGURATION_1,0b11110000);  
@@ -585,83 +589,88 @@ int main(void) {
     PCA9555_0_write(REG_OUTPUT_1,0x00);
     
     usart_init(103);
-    
+
+    print_lcd("restarting...");    
     transmit_word("ESP:restart\n");
     while (1) {
-        receive_word(answer, 256);
+        receive_word(answer,256);
         if (strstr(answer, "Waiting for command") != NULL) {
             break;  // ESP is ready
         }
     }
-    print_lcd(answer);
-    _delay_ms(1000);
     pca_lcd_clear_display();
-    
+    print_lcd(answer);
+    pca_lcd_command(0b11000000);
+    print_lcd("Connecting...");
     transmit_word("ESP:connect\n");
     receive_word(answer,256);
-    check(answer);
+    pca_lcd_clear_display();
+    check(answer,1);
     
     pca_lcd_command(0b11000000);
     
     transmit_word("ESP:url:\"http://192.168.1.250:5000/data\"\n");
     receive_word(answer,256);
-    check(answer);
+    check(answer,2);
 
-    _delay_ms(4000);
-    pca_lcd_clear_display();
+    _delay_ms(1000);
            
     while(1){
         
+        counter++;
+        
         ADCSRA|=(1<<ADSC);
         while(ADCSRA & (1<<ADSC));
-        int pres = ADC/5.11;
-        int16_t temp = read_temp()+16*12;
-        temp_digits(temp);
+        pres = ADC/5.11;
         pressure_digits(pres);
-        
         pres/=10;
+
+        temp = read_temp()+16*12;
+        temp_digits(temp);
         temp&=0x07FF;
-        temp/=16;
-        
-        
+        temp>>=4;
+       
         if (pres>=12 || pres<4){
             status="CHECK PRESSURE";
             if (temp<34 || temp>=37)
                 status="CHECK BOTH";
         }
         else if ((temp<34 || temp>=37))
-            status="CHECK TEMP";         
+            status="CHECK TEMP"; 
        
         pressed_keys = scan_keypad_rising_edge();
         key = keypad_to_ascii();
-        if(key=='#' && strcmp("NURSE CALL",status)==0)
+        if(key=='#' && strcmp(status,"NURSE CALL")==0){
             status="OK";
+        }
         
         pressed_keys = scan_keypad_rising_edge();
         key = keypad_to_ascii();
         if(key=='4')
             status="NURSE CALL";
-        
-        
-        print_lcd(status);
-        pca_lcd_command(0b11000000);
+
+        //pca_lcd_clear_display();
+        pca_lcd_command(0b10000000);
         output_temp();
         print_lcd(" | ");
-        pressure_output();
-        _delay_ms(500);
-        pca_lcd_clear_display();
-        
-        char payload[512];
-        create_payload(payload,sizeof(payload),24,status);
-        transmit_word(payload);
-        receive_word(answer,256);
-        check(answer);
-        transmit_word("ESP:transmit\n");
-        receive_word(answer,256);
+        pressure_output();        
         pca_lcd_command(0b11000000);
-        print_lcd(answer);
-        //check(answer);
-        _delay_ms(2000);
-                
+        print_lcd(status);
+         
+        if(strcmp(status,prev_status) || counter == 100){
+          pca_lcd_clear_display();      
+          create_payload(payload,sizeof(payload),24,status);
+          transmit_word(payload);
+          receive_word(answer,256);
+          check(answer,3);
+          pca_lcd_command(0b11000000);
+          transmit_word("ESP:transmit\n");
+          receive_word(answer,256);
+          check_transmit(answer,4); 
+          prev_status = status;
+          _delay_ms(1000);
+          counter = 0;
+          pca_lcd_clear_display();
+        }       
     }
 }

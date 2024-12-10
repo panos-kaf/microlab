@@ -486,10 +486,10 @@ LOAD data_init
                 0x0000000000000000       0x40 /Applications/microchip/xc8/v2.10/dfp/gcc/dev/atmega328pb/avr5/crtatmega328pb.o
 
 .bss.check_count
-                0x0000000000800255        0x2
+                0x0000000000800256        0x2
  .bss.check_count
-                0x0000000000800255        0x2 build/default/debug/8_1.o
-                0x0000000000800255                check_count
+                0x0000000000800256        0x2 build/default/debug/8_1.o
+                0x0000000000800256                check_count
 
 .text.avrlibc   0x0000000000000114      0x3c2
  .text.avrlibc  0x0000000000000114      0x3c2 /Applications/microchip/xc8/v2.10/avr/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/libc.a(vfprintf_std.o)
@@ -709,5 +709,5 @@ LOAD data_init
                 0x0000000000000c90                __vector_20
                 0x0000000000000c90                __vector_38
 
-.rodata         0x0000000000800100      0x155 load address 0x0000000000000c94
- .rodata        0x0000000000800100      0x155 build/default/debug/8_1.o
+.rodata         0x0000000000800100      0x156 load address 0x0000000000000c94
+ .rodata        0x0000000000800100      0x156 build/default/debug/8_1.o
